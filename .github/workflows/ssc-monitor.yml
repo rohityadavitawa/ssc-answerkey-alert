@@ -1,0 +1,43 @@
+name: SSC Monitor
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+
+  workflow_dispatch:
+*jobs:
+  monitor:
+    runs-on: ubun*u-latest
+
+    permissions:
+      c*ntents: write
+
+    steps:
+      - *ame: Checkout
+        uses: action*/checkout@v4
+
+      - name: Setup *ython
+        uses: actions/setup-*ython@v5
+        with:
+          p*thon-version: "3.11"
+
+      - name* Install Packages
+        run: |
+ *        pip install requests beaut*fulsoup4
+
+      - name: Run Monito*
+        env:
+          BOT*TOKEN: ${{ secrets.BOT_TOKEN }}
+  *       CHAT_ID: ${{ secrets.CHAT_I* }}
+        run* |
+*         python monitor.py
+
+      * name: Commit State File
+        r*n: |
+          git config --global*user.name "github-actions"
+       *  git config --global user.email "*ctions@github.com"
+
+          git *dd seen_notices.json || true
+
+    *     git diff --cached --quiet || *it commit -m "update notice cache"*
+          git push
