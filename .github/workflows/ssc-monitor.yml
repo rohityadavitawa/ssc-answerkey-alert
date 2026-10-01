@@ -1,42 +1,26 @@
 name: SSC Monitor
 
-*n:
-  schedule:
-    - cron: "*/5 * * * *"
-
+on:
   workflow_dispatch:
 
-jobs:*  monitor:
-    runs-on: ubuntu-lat*st
-
-    permissions:
-      content*: write
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
 
     steps:
-      - name: *heckout
-        uses: actions/chec*out@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Setup Python*        uses: actions/setup-python*v5
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          python-*ersion: "3.11"
+          python-version: "3.11"
 
-      - name: Inst*ll Packages
-        run: |
-       *  pip install requests beautifulso*p4
+      - name: Install Packages
+        run: pip install requests beautifulsoup4
 
       - name: Run Monitor
-    *   env:
-          BOT_TOKEN: ${{ s*crets.BOT_TOKEN }}
-          CHAT_*D: ${{ secrets.CHAT_ID }}
-        *un: |
-          python monitor.py
-*      - name: Commit State File
-  *     run: |
-          git config -*global user.name "github-actions"
-*         git config --global user.*mail "actions@github.com"
-
-       *  git add seen_notices.json || tru*
-
-          git diff --cached --qu*et || git commit -m "update notice*cache"
-
-          git push
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+        run: python monitor.py
